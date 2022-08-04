@@ -87,3 +87,7 @@ If ```return_results``` is set to True, after placing the bets, it will wait for
 ### Stop
 
 Last but not least its the ```Stop``` method. When called it close our browser window and finish our chromedrive instance.
+
+```python
+bot.Stop()
+```
