@@ -111,7 +111,7 @@ bot.Stop()
 <a name="contribute"></a>
 ## Contribute
 
-This is a hobby project so bugs might occur during testing or production. If you found any bugs or have any suggestion on how to improve it, feel free to open an issue, I'll be more than happy to hear from you.
+This is a hobby project so bugs might occur during testing or production. If you found any bugs or have any suggestion on how to improve it or any questions, feel free to open an issue, I'll be more than happy to hear from you.
 
 If you like to add your own features to it, feel free to fork and open a pull request.
 
