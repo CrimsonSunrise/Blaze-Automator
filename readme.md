@@ -2,7 +2,7 @@
 
 <a href="https://www.buymeacoffee.com/crimsonsunrise" target="_blank"><img src="https://www.buymeacoffee.com/assets/img/custom_images/purple_img.png"/></a>
 
-This project uses Selenium as the browser automation library. Install it before using ```pip install selenium```.
+This project uses Selenium as the browser automation library. Install it using ```pip install selenium```.
 
 We're using Chrome Webdriver as the browser but you can use whatever driver you want, just change the code.
 
