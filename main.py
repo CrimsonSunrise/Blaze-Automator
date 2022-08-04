@@ -1,16 +1,18 @@
 from Automation import Bot
 
-Bot.Start(detach=True, headless=False)
+bot = Bot()
 
-login, reason = Bot.Login(email="YOUR BLAZE EMAIL", password="YOUR BLAZE PASSWORD")
+bot.Start(headless=False)
+
+login, reason = bot.Login(email="YOUR BLAZE EMAIL", password="YOUR BLAZE PASSWORD")
 
 if login == True:
     
-    print(Bot.Get_Balance())
+    print(bot.Get_Balance())
 
-    # Bot.Bet(bets=[("black", 2)], return_results=True)
+    bot.Bet(bets=[{"color": "white", "amount": 2}], return_results=True)
 else:
     print(reason)
 
 
-Bot.Stop()
+bot.Stop()

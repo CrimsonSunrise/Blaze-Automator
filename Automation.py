@@ -8,7 +8,7 @@ import time
 import requests
 import json
 
-WEBSITE = 'https://blaze.com/pt/games/double'
+BASE_URL = 'https://blaze.com/pt/games/double'
 
 class Bot:
     
@@ -18,7 +18,7 @@ class Bot:
     ACCOUNT_BALANCE = None
     
     # Start | Start selenium library, open the browser and load the webpage
-    def Start(detach, headless):
+    def Start(headless):
         
         print("Starting Bot")
         
@@ -26,7 +26,7 @@ class Bot:
         
         chrome_options = Options()
         chrome_options.add_argument("--window-size=1300,1000")
-        chrome_options.add_experimental_option("detach", detach)
+        chrome_options.add_experimental_option("detach", True)
         if headless:
             chrome_options.add_argument("--headless")
         chrome_options.add_argument("--log-level=3")
@@ -34,7 +34,7 @@ class Bot:
         chrome_options.add_argument(f"user-agent={user_agent}")
         driver = webdriver.Chrome(options=chrome_options)
         driver.set_window_position(500, 0, windowHandle="current")
-        driver.get(WEBSITE)
+        driver.get(BASE_URL)
         
         print("Bot started")
     
@@ -128,18 +128,18 @@ class Bot:
         
         # Check if bets are well formated and if the balance is enough
         for bet in bets:
-            if len(bet) < 2 or isinstance(bet[0], str) == False:
+            if len(bet) < 2 or isinstance(bet['color'], str) == False:
                 print("Bad formatting", "sizes")
                 return False
             
-            if bet[0].lower() == "white" or bet[0].lower() == "black" or bet[0].lower() == "red":
+            if bet['color'].lower() == "white" or bet['color'].lower() == "black" or bet['color'].lower() == "red":
                 pass
             else:
                 print("Bad formatting", "wrong color name")
                 return False
             
-            if bet[1] * 1 > 0:
-                total_bet += bet[1]
+            if bet['amount'] * 1 > 0:
+                total_bet += bet['amount']
             else:
                 print("Bad formatting", "wrong amount")
                 return False
@@ -169,18 +169,18 @@ class Bot:
             INPUT_AMOUNT.send_keys(str(bet[1]))
             
             time.sleep(0.2)
-            if bet[0].lower() == "red":
+            if bet['color'].lower() == "red":
                 RED_BUTTON.click()
-            elif bet[0].lower() == "black":
+            elif bet['color'].lower() == "black":
                 BLACK_BUTTON.click()
-            elif bet[0].lower() == "white":
+            elif bet['color'].lower() == "white":
                 WHITE_BUTTON.click()
             
             time.sleep(0.2)
             BET_BUTTON.click()
             
-            print("color:", bet[0])
-            print("amount:", bet[1])
+            print("color:", bet['color'])
+            print("amount:", bet['amount'])
         
         # Check for the results
         if return_results == True:
@@ -210,13 +210,13 @@ class Bot:
             
             for bet in bets:
                 result = None
-                if bet[0] == result_color:
-                    result = bet[1] * multiplier
+                if bet['color'] == result_color:
+                    result = bet['amount'] * multiplier
                 else:
-                    result = 0 - bet[1]
+                    result = 0 - bet['amount']
                 
                 total_result += result
-                bet_results.append([bet[0], result])
+                bet_results.append({ "color": bet['color'], "amount": result})
                 
             print([total_result, bet_results])
             return [total_result, bet_results]
