@@ -1,5 +1,7 @@
 # A software to automate Blaze Double operations
 
+A :star: is much appreciated! 🥰
+
 <a href="https://www.buymeacoffee.com/crimsonsunrise" target="_blank"><img src="https://www.buymeacoffee.com/assets/img/custom_images/purple_img.png"/></a>
 
 This project uses Selenium as the browser automation library. Install it using ```pip install selenium```.
@@ -114,5 +116,3 @@ bot.Stop()
 This is a hobby project so bugs might occur during testing or production. If you found any bugs or have any suggestion on how to improve it or any questions, feel free to open an issue, I'll be more than happy to hear from you.
 
 If you like to add your own features to it, feel free to fork and open a pull request.
-
-A :star: is much appreciated! 🥰
