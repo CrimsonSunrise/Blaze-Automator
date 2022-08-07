@@ -2,7 +2,8 @@ from Automation import Bot
 
 bot = Bot()
 
-bot.Start(headless=False)
+# bot.Start(False)
+bot.Start(headless=True)
 
 login, reason = bot.Login(email="YOUR BLAZE EMAIL", password="YOUR BLAZE PASSWORD")
 

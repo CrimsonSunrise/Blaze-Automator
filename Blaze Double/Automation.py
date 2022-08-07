@@ -18,7 +18,7 @@ class Bot:
     ACCOUNT_BALANCE = None
     
     # Start | Start selenium library, open the browser and load the webpage
-    def Start(headless):
+    def Start(self, headless):
         
         print("Starting Bot")
         
@@ -27,8 +27,10 @@ class Bot:
         chrome_options = Options()
         chrome_options.add_argument("--window-size=1300,1000")
         chrome_options.add_experimental_option("detach", True)
-        if headless:
+        
+        if headless == True:
             chrome_options.add_argument("--headless")
+        
         chrome_options.add_argument("--log-level=3")
         user_agent = "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/60.0.3112.50 Safari/537.36"
         chrome_options.add_argument(f"user-agent={user_agent}")
@@ -39,14 +41,14 @@ class Bot:
         print("Bot started")
     
     # Stop | Close all selenium instances and processes
-    def Stop():
+    def Stop(self):
         
         print("Bot is stopping")
         driver.quit()
         print("Bot stopped")
     
     # Login
-    def Login(email, password):
+    def Login(self, email, password):
         
         error = None
         global LOGIN_SUCCESS
@@ -80,11 +82,11 @@ class Bot:
                 return error
             else:
                 print("Login successful")
-                Bot.Get_Balance()
+                Bot.Get_Balance(self)
                 return [LOGIN_SUCCESS, None]
     
     # Balance
-    def Get_Balance():
+    def Get_Balance(self):
         
         error = None
         result = None
@@ -122,7 +124,7 @@ class Bot:
                 return result
     
     # Bet
-    def Bet(bets, return_results):
+    def Bet(self, bets, return_results):
         
         total_bet = 0
         
