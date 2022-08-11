@@ -168,7 +168,7 @@ class Bot:
         for bet in bets:
             
             INPUT_AMOUNT.clear()
-            INPUT_AMOUNT.send_keys(str(bet[1]))
+            INPUT_AMOUNT.send_keys(str(bet['amount']))
             
             time.sleep(0.2)
             if bet['color'].lower() == "red":
