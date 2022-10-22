@@ -23,6 +23,8 @@ We're using Chrome Webdriver as the browser, which can be found and downloaded a
     * [Login](#login)
     * [Get Balance](#get-balance)
     * [Bet](#bet)
+        * [Double](#double)
+        * [Crash](#crash)
     * [Stop](#stop)
 * [Contribute](#contribute)
 
@@ -65,7 +67,7 @@ else:
 
 <div style="padding: 15px; border: 1px solid transparent; border-color: transparent; margin-bottom: 20px; border-radius: 4px; color: #8a6d3b;; background-color: #fcf8e3; border-color: #faebcc;">
 <b>IMPORTANT!</b><br/>
-After the browser opens and automatically fill the login form with your information, a <b>Captcha</b> will be shown for you to solve. The algorithm will only proccees after solving the <b>Captcha</b>.
+After the browser opens and automatically fill the login form with your information, a <b>Captcha</b> will be shown for you to solve. The algorithm will only procceed after solving the <b>Captcha</b>.
 </div>
 
 <a name="get-balance"></a>
@@ -95,7 +97,7 @@ bot.Bet(game="double/crash", bets=["array of bets"], return_results=True/False)
 • The third parameter is a boolean which defines if the result of the bet will be returned.
 
 
-
+<a name="double"></a>
 #### • Double
 
 
@@ -115,6 +117,7 @@ bet2 = {
 bot.Bet(game="double", bets=[bet1, bet2], return_results=True)
 ```
 
+<a name="crash"></a>
 #### • Crash
 
 ```python
