@@ -10,7 +10,7 @@ A :star: is much appreciated! 🥰
 
 ```Selenium```
 
-We're using Chrome Webdriver as the browser, which can be found and downloaded at [this page](https://chromedriver.chromium.org/downloads). Download the version You can use whatever driver you want, just change the code.
+We're using Chrome Webdriver as the browser, which can be found and downloaded at [this page](https://chromedriver.chromium.org/downloads). Download the same version you're using within your installed Chrome browser.
 
 ## :warning: Disclaimer
 
