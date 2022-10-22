@@ -1,12 +1,16 @@
-# A software to automate Blaze Double operations
+# A software to automate Blaze bets
 
 A :star: is much appreciated! 🥰
 
 <a href="https://www.buymeacoffee.com/crimsonsunrise" target="_blank"><img src="https://www.buymeacoffee.com/assets/img/custom_images/purple_img.png"/></a>
 
-This project uses Selenium as the browser automation library. Install it using ```pip install selenium```.
+## Requirements:
 
-We're using Chrome Webdriver as the browser but you can use whatever driver you want, just change the code.
+```Python 3.7 or above```
+
+```Selenium```
+
+We're using Chrome Webdriver as the browser, which can be found and downloaded at [this page](https://chromedriver.chromium.org/downloads). Download the version You can use whatever driver you want, just change the code.
 
 ## :warning: Disclaimer
 
@@ -40,10 +44,10 @@ Now we have access to the methods that we will need.
 The first method is the ```Start``` method. It is responsible to instantiate our browser and load the ```BASE_URL```.
 
 ```python
-bot.Start(headless=False)
+bot.Start()
 ```
 
-We can set the browser to be headless or not with the ```headless``` parameter.
+<!-- We can set the browser to be headless or not with the ```headless``` parameter. -->
 
 <a name="login"></a>
 ### Login
@@ -59,6 +63,11 @@ else:
     print(reason)
 ```
 
+<div style="padding: 15px; border: 1px solid transparent; border-color: transparent; margin-bottom: 20px; border-radius: 4px; color: #8a6d3b;; background-color: #fcf8e3; border-color: #faebcc;">
+<b>IMPORTANT!</b><br/>
+After the browser opens and automatically fill the login form with your information, a <b>Captcha</b> will be shown for you to solve. The algorithm will only proccees after solving the <b>Captcha</b>.
+</div>
+
 <a name="get-balance"></a>
 ### Get_Balance
 
@@ -73,31 +82,54 @@ print(real, bonus)
 <a name="bet"></a>
 ### Bet
 
-The next is the ```Bet``` method and it has 2 parameters.
-
-The first parameter is an array with the bets being objects with the following format:
+The next is the ```Bet``` method and it has 3 parameters.
 
 ```python
+bot.Bet(game="double/crash", bets=["array of bets"], return_results=True/False)
+```
+
+• The first parameter is the game mode, being `double` or `crash`.
+
+• The second parameter is an array of bets. Each bet should be formated as below.
+
+• The third parameter is a boolean which defines if the result of the bet will be returned.
+
+
+
+#### • Double
+
+
+```python
+# Colors: red, black, white
+
 bet1 = {
     "color": "red",
-    "amount": 2
+    "amount": 1.7
 }
 
 bet2 = {
-    "color": "black",
-    "amount": 2
+    "color": "white",
+    "amount": 1.7
 }
-```
-    
-The second parameter is a boolean to chose if you want the method to return the result of the bet or not.
 
-So now we can call our method.
+bot.Bet(game="double", bets=[bet1, bet2], return_results=True)
+```
+
+#### • Crash
 
 ```python
-bot.Bet(bets=[bet1, bet2], return_results=True)
+# Always set autoCashout over 1.01, otherwise you will always lose.
+
+bet1 = {
+    "autoCashout": 1.01,
+    "amount": 1.7
+}
+
+# Bet function for crash receive only 1 bet as argument.
+bot.Bet(game="crash", bet=bet1, return_results=True)
 ```
 
-Once called, the method will imediatelly check if the bet window is open. If it is, will bet on the selected options right away, if not it will wait for the next bet window.
+Once called, the method will imediatelly check if the bet window is open. If it is, will bet with the selected options right away, if not it will wait for the next bet window.
 
 If ```return_results``` is set to True, after placing the bets, it will wait for the complete rolling status and will compare the bets with the result and then will return an array with 2 items, the first item being the total profit for the bets and the second being the bet array with respective results.
 
