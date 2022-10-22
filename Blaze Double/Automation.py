@@ -8,28 +8,27 @@ import time
 import requests
 import json
 
-BASE_URL = 'https://blaze.com/pt/games/double'
-
 class Bot:
     
     driver = None
     LOGIN_SUCCESS = None
     
     ACCOUNT_BALANCE = None
+    BASE_URL = ""
     
     # Start | Start selenium library, open the browser and load the webpage
-    def Start(self, headless):
+    def Start(self):
         
         print("Starting Bot")
         
+        global BASE_URL
+        BASE_URL = 'https://blaze.com/pt/games/double'
+            
         global driver
         
         chrome_options = Options()
         chrome_options.add_argument("--window-size=1300,1000")
         chrome_options.add_experimental_option("detach", True)
-        
-        if headless == True:
-            chrome_options.add_argument("--headless")
         
         chrome_options.add_argument("--log-level=3")
         user_agent = "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/60.0.3112.50 Safari/537.36"
@@ -68,10 +67,11 @@ class Bot:
             SUBMIT_BUTTON = driver.find_element(By.CLASS_NAME, 'submit')
             SUBMIT_BUTTON.click()
             
-            time.sleep(1)
-            LOGIN_CONFIRMATION = driver.find_element(By.CLASS_NAME, 'description')
-            if LOGIN_CONFIRMATION:
-                LOGIN_SUCCESS = True
+            # You have to solve the captcha for it to continue
+            while len(driver.find_elements_by_class_name("description")) == 0:
+                time.sleep(1)
+            
+            LOGIN_SUCCESS = True
             
         except Exception as e:
             error = [False, e]
@@ -124,7 +124,21 @@ class Bot:
                 return result
     
     # Bet
-    def Bet(self, bets, return_results):
+    def Bet(self, game, bets, return_results):
+        global driver
+        global BASE_URL
+        
+        if game == "crash":
+            BASE_URL = 'https://blaze.com/pt/games/crash'
+            driver.get(BASE_URL)
+            return self.BetCrash([bets[0]], return_results)
+        
+        if game == "double":
+            BASE_URL = 'https://blaze.com/pt/games/double'
+            driver.get(BASE_URL)
+            return self.BetDouble(bets, return_results)
+    
+    def BetDouble(self, bets, return_results):
         
         total_bet = 0
         
@@ -153,7 +167,9 @@ class Bot:
         # Wait for the next bet window
         current_status = None
         while current_status != "waiting":
-            current_status = requests.get('https://blaze.com/api/roulette_games/current').json()['status']
+            current_status = requests.get('https://blaze.com/api/roulette_games/current')
+            if current_status.status_code == 200:
+                    current_status = current_status.json()['status']
             time.sleep(1)
         
         # Get the input and buttons reference
@@ -181,8 +197,7 @@ class Bot:
             time.sleep(0.2)
             BET_BUTTON.click()
             
-            print("color:", bet['color'])
-            print("amount:", bet['amount'])
+            print(bet)
         
         # Check for the results
         if return_results == True:
@@ -190,8 +205,10 @@ class Bot:
             current_result = None
             current_status = None
             while current_status != "complete":
-                current_result = requests.get('https://blaze.com/api/roulette_games/current').json()
-                current_status = current_result['status']
+                result = requests.get('https://blaze.com/api/roulette_games/current')
+                if result.status_code == 200:
+                    current_status = result.json()['status']
+                    current_result = result.json()
                 time.sleep(1)
             
             result_color = None
@@ -219,6 +236,94 @@ class Bot:
                 
                 total_result += result
                 bet_results.append({ "color": bet['color'], "amount": result})
+                
+            print([total_result, bet_results])
+            return [total_result, bet_results]
+    
+    def BetCrash(self, bets, return_results):
+        
+        total_bet = 0
+        
+        # Check if bets length is greater than 1
+        if len(bets) > 1:
+            print("Crash bets only can receive 1 object")
+            return False
+        
+        # Check if bets are well formated and if the balance is enough
+        for bet in bets:
+            if len(bet) < 2:
+                print("Bad formatting", "sizes")
+                return False
+            
+            if bet['amount'] * 1 > 0:
+                total_bet += bet['amount']
+            else:
+                print("Bad formatting", "wrong amount")
+                return False
+            
+        if total_bet > ACCOUNT_BALANCE[0]:
+            print("You don't have enough balance")
+            return False
+        
+        # Wait for the next bet window
+        current_status = None
+        while current_status != "waiting":
+            current_status = requests.get('https://blaze.com/api/crash_games/current')
+            if current_status.status_code == 200:
+                    current_status = current_status.json()['status']
+            time.sleep(1)
+        
+        # Get the input and buttons reference
+        INPUT_AMOUNT = driver.find_element(By.XPATH, '//*[@id="crash-controller"]/div[1]/div[2]/div[1]/div[1]/div/div[1]/input')
+        INPUT_AUTO_REMOVE = driver.find_element(By.XPATH, '//*[@id="crash-controller"]/div[1]/div[2]/div[1]/div[2]/div[1]/input')
+        BET_BUTTON = driver.find_element(By.XPATH, '//*[@id="crash-controller"]/div[1]/div[2]/div[2]/button')
+        
+        # Perform bet
+        for bet in bets:
+            
+            INPUT_AMOUNT.clear()
+            INPUT_AMOUNT.send_keys(str(bet['amount']))
+            
+            time.sleep(0.2)
+            if bet['autoCashout'] > 1.00:
+                INPUT_AUTO_REMOVE.clear()
+                INPUT_AUTO_REMOVE.send_keys(str(bet['autoCashout']))
+            else:
+                INPUT_AUTO_REMOVE.clear()
+                INPUT_AUTO_REMOVE.send_keys('1.01')
+            
+            time.sleep(0.2)
+            BET_BUTTON.click()
+            
+            print(bet)
+        
+        # Check for the results
+        if return_results == True:
+            
+            current_result = None
+            current_status = None
+            while current_status != "complete":
+                result = requests.get('https://blaze.com/api/crash_games/current')
+                if result.status_code == 200:
+                    current_status = result.json()['status']
+                    current_result = result.json()
+                time.sleep(1)
+            
+            result_crash = float(current_result['crash_point'])
+            print("res", result_crash)
+            
+            bet_results = []
+            total_result = 0
+            
+            for bet in bets:
+                result = None
+                if bet['autoCashout'] <= result_crash:
+                    result = bet['autoCashout'] * bet['amount']
+                else:
+                    result = 0 - bet['amount']
+                
+                total_result += result
+                bet_results.append({ "autoCashout": bet['autoCashout'], "amount": result})
                 
             print([total_result, bet_results])
             return [total_result, bet_results]
