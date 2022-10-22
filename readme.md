@@ -128,8 +128,9 @@ bet1 = {
     "amount": 1.7
 }
 
-# Bet function for crash receive only 1 bet as argument.
-bot.Bet(game="crash", bet=bet1, return_results=True)
+# Bet function for crash receive only 1 array item as argument.
+# In case of multiple objects, only the first will be processed.
+bot.Bet(game="crash", bet=[bet1], return_results=True)
 ```
 
 Once called, the method will imediatelly check if the bet window is open. If it is, will bet with the selected options right away, if not it will wait for the next bet window.
